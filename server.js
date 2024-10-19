@@ -1,57 +1,82 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('./models/User');
+const Movie = require('./models/Movie');
+const Episode = require('./models/Episode'); // Asegúrate de importar el modelo Episode
 
-// Crear una instancia de la aplicación Express
 const app = express();
+const PORT = 3000;
 
-// Middleware para parsear el cuerpo de las peticiones JSON
-app.use(bodyParser.json());
+// Middleware
+app.use(express.json());
 
-// Conectar a la base de datos de MongoDB
+// Conexión a MongoDB
 mongoose.connect('mongodb://localhost:27017/BolaDeDracDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => console.log('Conectado a MongoDB'))
-.catch(err => console.error('Error al conectar a MongoDB:', err));
-
-// Esquema y modelo de usuario
-const userSchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    password: { type: String, required: true },
+.then(() => {
+    console.log('Conectado a MongoDB');
+})
+.catch(err => {
+    console.error('Error al conectar a MongoDB:', err.message);
 });
-
-const User = mongoose.model('User', userSchema);
 
 // Ruta para registrar un nuevo usuario
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
-
-    // Validar que se reciban los datos
-    if (!username || !password) {
-        return res.status(400).json({ error: "Faltan datos" });
-    }
-
-    // Crear un nuevo usuario
-    const user = new User({ username, password });
-
     try {
-        await user.save();
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ username, password: hashedPassword });
+        await newUser.save();
         res.status(201).json({ message: 'Usuario registrado exitosamente' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al registrar el usuario' });
+        res.status(400).json({ error: error.message });
     }
 });
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-    res.send('API de la Biblioteca de Bola de Drac en funcionamiento');
+// Ruta para iniciar sesión
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await User.findOne({ username });
+        if (!user) return res.status(401).json({ error: 'Credenciales incorrectas' });
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).json({ error: 'Credenciales incorrectas' });
+        const token = jwt.sign({ id: user._id }, 'secret_key', { expiresIn: '1h' });
+        res.json({ message: 'Inicio de sesión exitoso', token });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 });
 
-// Escuchar en el puerto 3000
-const PORT = process.env.PORT || 3000;
+// Ruta para agregar una película
+app.post('/movies', async (req, res) => {
+    try {
+        const { title, year, filePath } = req.body;
+        const newMovie = new Movie({ title, year, filePath });
+        await newMovie.save();
+        res.status(201).json({ message: 'Película creada exitosamente', movie: newMovie });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Ruta para agregar un episodio
+app.post('/episodes', async (req, res) => {
+    try {
+        const { title, season, episodeNumber, filePath } = req.body;
+        const newEpisode = new Episode({ title, season, episodeNumber, filePath });
+        await newEpisode.save();
+        res.status(201).json({ message: 'Episodio creado exitosamente', episode: newEpisode });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
