@@ -1,49 +1,197 @@
-body {
-    font-family: Arial, sans-serif;
+/* Reset CSS */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
-    background-color: #222;
+    background-color: #ff6600; /* Dragon Ball Orange */
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
-    text-align: center;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    max-width: 150px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+ul {
+    display: flex;
+    list-style: none;
+}
+
+li {
+    margin: 0 15px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #ffcc00; /* Dragon Ball Yellow */
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.btn {
+    background-color: #ffcc00; /* Dragon Ball Yellow */
+    color: #1a1a1a; /* Dark color for contrast */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+    font-weight: bold;
+    outline: none;
+}
+
+.btn:hover {
+    background-color: #e6b800;
+    transform: scale(1.05);
 }
 
 main {
     padding: 20px;
-    margin-top: 20px; /* Añadido margen para mejorar la legibilidad */
+    flex-grow: 1;
 }
 
 h2 {
-    color: #444;
+    color: #ffcc00;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+h3 {
+    color: #ffcc00;
+    margin-bottom: 20px;
 }
 
-li {
-    background-color: white;
-    margin: 10px 0;
-    padding: 15px;
+.video-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.video-item {
+    background-color: #333;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s; /* Añadido efecto de transición */
+    overflow: hidden;
+    max-width: 320px;
+    text-align: center;
+    transition: transform 0.3s;
 }
 
-li:hover {
-    background-color: #eaeaea; /* Efecto hover */
+.video-item:hover {
+    transform: translateY(-5px);
+}
+
+.video-thumbnail {
+    width: 100%;
+    height: auto;
 }
 
 video {
-    display: block;
-    margin-top: 10px;
-    margin-bottom: 10px; /* Añadido margen inferior */
     width: 100%;
-    max-width: 600px;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: #ff6600;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        margin: 5px 0;
+    }
+
+    .video-item {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px;
+    }
+
+    .logo {
+        max-width: 100px;
+    }
+
+    .nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        margin: 5px 0;
+    }
+
+    .video-item {
+        max-width: 100%;
+    }
 }
