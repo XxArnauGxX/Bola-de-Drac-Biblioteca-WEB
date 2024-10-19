@@ -2,9 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const User = require('./models/User');
 const Movie = require('./models/Movie');
-const Episode = require('./models/Episode'); // Asegúrate de importar el modelo Episode
+const Episode = require('./models/Episode');
 
 const app = express();
 const PORT = 3000;
@@ -23,6 +24,10 @@ mongoose.connect('mongodb://localhost:27017/BolaDeDracDB', {
 .catch(err => {
     console.error('Error al conectar a MongoDB:', err.message);
 });
+
+// Ruta para servir archivos estáticos (incluidos los videos)
+app.use('/videos', express.static(path.join(__dirname, 'videos')));
+app.use(express.static(path.join(__dirname, 'src')));
 
 // Ruta para registrar un nuevo usuario
 app.post('/register', async (req, res) => {
@@ -74,6 +79,21 @@ app.post('/episodes', async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
+});
+
+// Ruta para obtener todos los episodios
+app.get('/episodes', async (req, res) => {
+    try {
+        const episodes = await Episode.find();
+        res.json(episodes);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Ruta para servir el archivo index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'index.html'));
 });
 
 // Iniciar el servidor
