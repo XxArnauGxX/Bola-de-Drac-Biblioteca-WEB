@@ -1,17 +1,21 @@
-fetch('/episodes')
-    .then(response => response.json())
-    .then(episodes => {
-        const episodeList = document.getElementById('episode-list');
+async function fetchEpisodes() {
+    try {
+        const response = await fetch('http://localhost:3000/episodes'); // Cambia a tu URL
+        if (!response.ok) {
+            throw new Error('Error al obtener los episodios');
+        }
+        const episodes = await response.json();
+        const movieList = document.getElementById('movie-list');
+
         episodes.forEach(episode => {
             const li = document.createElement('li');
-            li.innerHTML = `
-                <h3>${episode.title}</h3>
-                <video controls>
-                    <source src="/videos/${episode.videoPath}" type="video/mp4">
-                    Tu navegador no soporta la etiqueta de video.
-                </video>
-                <p>${episode.description}</p>
-            `;
-            episodeList.appendChild(li);
+            li.textContent = `${episode.title} (${episode.year}) - ${episode.filePath}`;
+            movieList.appendChild(li);
         });
-    });
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Llama a la función para cargar los episodios al inicio
+fetchEpisodes();
