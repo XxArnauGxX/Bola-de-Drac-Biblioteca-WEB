@@ -5,6 +5,7 @@ const episodeSchema = new mongoose.Schema({
     season: { type: Number, required: true },
     episodeNumber: { type: Number, required: true },
     filePath: { type: String, required: true },
+    thumbnail: { type: String, required: true } 
 });
 
 module.exports = mongoose.model('Episode', episodeSchema);

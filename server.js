@@ -60,8 +60,8 @@ app.post('/login', async (req, res) => {
 // Ruta para agregar una película
 app.post('/movies', async (req, res) => {
     try {
-        const { title, year, filePath } = req.body;
-        const newMovie = new Movie({ title, year, filePath });
+        const { title, year, filePath, thumbnail } = req.body;
+        const newMovie = new Movie({ title, year, filePath, thumbnail });
         await newMovie.save();
         res.status(201).json({ message: 'Película creada exitosamente', movie: newMovie });
     } catch (error) {
@@ -72,8 +72,8 @@ app.post('/movies', async (req, res) => {
 // Ruta para agregar un episodio
 app.post('/episodes', async (req, res) => {
     try {
-        const { title, season, episodeNumber, filePath } = req.body;
-        const newEpisode = new Episode({ title, season, episodeNumber, filePath });
+        const { title, season, episodeNumber, filePath, thumbnail } = req.body;
+        const newEpisode = new Episode({ title, season, episodeNumber, filePath, thumbnail });
         await newEpisode.save();
         res.status(201).json({ message: 'Episodio creado exitosamente', episode: newEpisode });
     } catch (error) {
